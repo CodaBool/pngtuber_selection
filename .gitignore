@@ -3,3 +3,6 @@ node_modules/
 images/
 main.css
 *.md
+.dev.vars
+.wranger/
+junk.*

@@ -596,26 +596,34 @@ function cssCommentSafe(value) {
 
 function renderHomeHtml({ user, avatars, currentAvatarKey }) {
   const loginSection = user
-    ? `<div class=\"identity\">Logged in as <strong>${escapeHtml(user.globalName || user.username)}</strong> <span class=\"subtle\">(@${escapeHtml(user.username)} | ${escapeHtml(user.discordId)})</span></div>
+    ? `<div class=\"identity\"><strong>${escapeHtml(user.globalName || user.username)}</strong> <span class=\"subtle\">(@${escapeHtml(user.username)} | ${escapeHtml(user.discordId)})</span></div>
        <form method=\"post\" action=\"/logout\"><button class=\"button ghost\" type=\"submit\">Log out</button></form>`
     : `<a class=\"button\" href=\"/login\">Login with Discord</a>`;
 
   const cards = avatars
     .map((avatar) => {
       const selected = user && avatar.key === currentAvatarKey;
+      const actionControl = user
+        ? `<form method="post" action="/select">
+             <input type="hidden" name="avatarKey" value="${escapeHtml(avatar.key)}" />
+             <button class="button" type="submit">${selected ? "Selected" : "Select"}</button>
+           </form>`
+        : `<a class="button" href="/login">Select</a>`;
       return `<article class=\"card ${selected ? "selected" : ""}\">
-        <img src=\"${escapeHtml(avatar.previewUrl || avatar.speakingUrl)}\" alt=\"${escapeHtml(avatar.name)} preview\" loading=\"lazy\" />
-        <div class=\"card-body\">
-          <h3>${escapeHtml(avatar.name)}</h3>
-          <p>${escapeHtml(avatar.description || "")}</p>
-          ${
-            user
-              ? `<form method=\"post\" action=\"/select\">
-                   <input type=\"hidden\" name=\"avatarKey\" value=\"${escapeHtml(avatar.key)}\" />
-                   <button class=\"button\" type=\"submit\">${selected ? "Selected" : "Select"}</button>
-                 </form>`
-              : `<a class=\"button\" href=\"/login\">Select</a>`
-          }
+        <div class="preview-pair">
+          <figure class="preview-frame">
+            <img src="${escapeHtml(avatar.idleUrl)}" alt="${escapeHtml(avatar.name)} idle preview" loading="lazy" />
+          </figure>
+          <figure class="preview-frame">
+            <img src="${escapeHtml(avatar.speakingUrl)}" alt="${escapeHtml(avatar.name)} talking preview" loading="lazy" />
+          </figure>
+        </div>
+        <div class="card-body">
+          <div class="card-topline">
+            <h3>${escapeHtml(avatar.name)}</h3>
+            ${actionControl}
+          </div>
+          ${avatar.description ? `<p>${escapeHtml(avatar.description)}</p>` : ""}
         </div>
       </article>`;
     })
@@ -693,7 +701,7 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
         gap: 14px;
       }
       .card {
@@ -705,20 +713,41 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
       .card.selected {
         box-shadow: 0 0 0 2px #111;
       }
-      .card img {
+      .preview-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        padding: 8px;
+      }
+      .preview-frame {
+        margin: 0;
+        border: 1px solid #d6d6d6;
+        border-radius: 10px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%);
+      }
+      .preview-frame img {
         width: 100%;
         aspect-ratio: 4 / 3;
         object-fit: contain;
-        background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%);
+        object-position: center;
+        display: block;
       }
       .card-body {
-        padding: 12px;
+        padding: 14px;
+      }
+      .card-topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 2px 2px 0;
       }
       .card h3 {
-        margin: 0 0 6px;
+        margin: 0;
       }
       .card p {
-        margin: 0 0 12px;
+        margin: 8px 0 0;
         color: var(--ink-muted);
       }
       .footer-links {
@@ -733,14 +762,13 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
       <header>
         <div>
           <h1>Choose Your Avatar</h1>
-          <p>Pick a pngtuber avatar used by the Reactive/Fugi overlay.</p>
         </div>
         <div class=\"actions\">${loginSection}</div>
       </header>
       <section class=\"grid\">${cards}</section>
       <div class=\"footer-links\">
-        <a href=\"/css\">Open generated CSS</a>
-        <a href=\"/admin\">Admin panel</a>
+        <a href=\"/css\">CSS</a> | 
+        <a href=\"/admin\">Admin</a>
       </div>
     </main>
   </body>

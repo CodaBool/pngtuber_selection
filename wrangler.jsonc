@@ -7,12 +7,12 @@
     {
       "binding": "DB",
       "database_name": "reactive-avatars",
-      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID",
+      "database_id": "44847e9b-b925-427f-ba29-0afa41f72d63",
       "migrations_dir": "migrations"
     }
   ],
   "vars": {
-    "DISCORD_REDIRECT_URI": "http://127.0.0.1:8787/callback",
-    "ADMIN_DISCORD_IDS": ""
+    "DISCORD_REDIRECT_URI": "https://reactive-discord-avatar-selector.codabool.workers.dev/callback",
+    "ADMIN_DISCORD_IDS": "684265204007305244"
   }
 }
