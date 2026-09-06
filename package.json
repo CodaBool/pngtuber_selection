@@ -1,0 +1,14 @@
+{
+  "name": "reactive-discord-avatar-selector",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "d1:create": "wrangler d1 create reactive-avatars",
+    "d1:migrate:local": "wrangler d1 migrations apply reactive-avatars --local",
+    "d1:migrate:remote": "wrangler d1 migrations apply reactive-avatars --remote"
+  },
+  "type": "module",
+  "devDependencies": {
+    "wrangler": "^3.82.0"
+  }
+}

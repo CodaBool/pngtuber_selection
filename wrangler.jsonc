@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "reactive-discord-avatar-selector",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-06",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "reactive-avatars",
+      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "DISCORD_REDIRECT_URI": "http://127.0.0.1:8787/callback",
+    "ADMIN_DISCORD_IDS": ""
+  }
+}
