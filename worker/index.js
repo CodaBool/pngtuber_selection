@@ -515,6 +515,7 @@ async function fetchDiscordIdentity(accessToken) {
 
 function generateOverlayCss(rows) {
   const lines = [];
+  const matchedDiscordIds = [];
 
   lines.push(":root,");
   lines.push("html,");
@@ -536,6 +537,25 @@ function generateOverlayCss(rows) {
   lines.push("    transform: translateY(0);");
   lines.push("  }");
   lines.push("}");
+
+  for (const row of rows) {
+    const avatar = getAvatarByKey(String(row.avatar_key || ""));
+    if (!avatar) {
+      continue;
+    }
+    matchedDiscordIds.push(cssEscape(String(row.discord_id || "")));
+  }
+
+  if (matchedDiscordIds.length > 0) {
+    const notSelectors = matchedDiscordIds
+      .map((discordId) => `:not([data-discord-id=\"${discordId}\"])`)
+      .join("");
+    lines.push("");
+    lines.push("/* Hide users without a mapped avatar selection */");
+    lines.push(`#embed [data-discord-id]${notSelectors} {`);
+    lines.push("  display: none !important;");
+    lines.push("}");
+  }
 
   for (const row of rows) {
     const avatar = getAvatarByKey(String(row.avatar_key || ""));
@@ -620,7 +640,10 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
         </div>
         <div class="card-body">
           <div class="card-topline">
-            <h3>${escapeHtml(avatar.name)}</h3>
+            <div class="title-group">
+              <h3>${escapeHtml(avatar.name)}</h3>
+              ${avatar.isAnimated ? "<span class=\"animated-badge\">Animated</span>" : ""}
+            </div>
             ${actionControl}
           </div>
           ${avatar.description ? `<p>${escapeHtml(avatar.description)}</p>` : ""}
@@ -743,8 +766,34 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
         gap: 10px;
         padding: 2px 2px 0;
       }
+      .title-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
       .card h3 {
         margin: 0;
+      }
+      .animated-badge {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #111;
+        border-radius: 999px;
+        padding: 2px 9px;
+        font-size: 0.72rem;
+        line-height: 1.4;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #101010;
+        background: linear-gradient(120deg, #ffffff 0%, #eef3ff 38%, #ffffff 68%);
+        background-size: 220% 100%;
+        animation: badge-sheen 2.4s linear infinite;
+        white-space: nowrap;
+      }
+      @keyframes badge-sheen {
+        0% { background-position: 200% 0; }
+        100% { background-position: -20% 0; }
       }
       .card p {
         margin: 8px 0 0;

@@ -4,5 +4,5 @@ images/
 main.css
 *.md
 .dev.vars
-.wranger/
+.wrangler/
 junk.*
