@@ -58,6 +58,7 @@ export default {
 async function handleHome(request, env) {
   const session = await getSessionFromRequest(request, env);
   const avatars = getAvatarEntries();
+  const isAuthedAdmin = session ? isAdmin(session.discordId, env.ADMIN_DISCORD_IDS) : false;
   let currentAvatarKey = null;
 
   if (session) {
@@ -76,7 +77,8 @@ async function handleHome(request, env) {
   const html = renderHomeHtml({
     user: session,
     avatars,
-    currentAvatarKey
+    currentAvatarKey,
+    isAuthedAdmin
   });
 
   return htmlResponse(html);
@@ -614,7 +616,7 @@ function cssCommentSafe(value) {
   return String(value).replace(/\*\//g, "* /");
 }
 
-function renderHomeHtml({ user, avatars, currentAvatarKey }) {
+function renderHomeHtml({ user, avatars, currentAvatarKey, isAuthedAdmin }) {
   const loginSection = user
     ? `<div class=\"identity\"><strong>${escapeHtml(user.globalName || user.username)}</strong> <span class=\"subtle\">(@${escapeHtml(user.username)} | ${escapeHtml(user.discordId)})</span></div>
        <form method=\"post\" action=\"/logout\"><button class=\"button ghost\" type=\"submit\">Log out</button></form>`
@@ -652,13 +654,18 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
     })
     .join("\n");
 
+  const footerLinks = isAuthedAdmin
+    ? `<div class="footer-links">
+        <a href="/css">CSS</a>
+        <a href="/admin">Admin</a>
+      </div>`
+    : "";
+
   return `<!doctype html>
 <html lang=\"en\">
   <head>
     <meta charset=\"utf-8\" />
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
     <title>Reactive Discord Avatar Selector</title>
-    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />
     <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />
     <link href=\"https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap\" rel=\"stylesheet\" />
     <style>
@@ -675,10 +682,7 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
         min-height: 100vh;
         font-family: \"Jost\", sans-serif;
         color: var(--ink);
-        background:
-          radial-gradient(circle at 10% 15%, #f3f3f3 0 12%, transparent 13%),
-          radial-gradient(circle at 90% 80%, #f0f0f0 0 10%, transparent 11%),
-          var(--bg);
+        background: var(--bg);
       }
       .wrap {
         max-width: 1100px;
@@ -816,8 +820,7 @@ function renderHomeHtml({ user, avatars, currentAvatarKey }) {
       </header>
       <section class=\"grid\">${cards}</section>
       <div class=\"footer-links\">
-        <a href=\"/css\">CSS</a> | 
-        <a href=\"/admin\">Admin</a>
+      ${footerLinks}
       </div>
     </main>
   </body>

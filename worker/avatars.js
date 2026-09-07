@@ -97,11 +97,27 @@ export const AVATARS = {
     previewUrl: "https://gist.github.com/user-attachments/assets/a13a1228-b431-4c81-ad4d-1c372b49c84e",
     isAnimated: false,
     sortOrder: 11
+  },
+  bunny: {
+    key: "bunny",
+    name: "Bunny",
+    idleUrl: "https://gist.github.com/user-attachments/assets/1e963085-5535-41dd-b567-da9d8cc2c926",
+    speakingUrl: "https://gist.github.com/user-attachments/assets/7dd9b7bf-489e-4889-9bed-5062eb0d1761",
+    previewUrl: "https://gist.github.com/user-attachments/assets/7dd9b7bf-489e-4889-9bed-5062eb0d1761",
+    isAnimated: true,
+    sortOrder: 12
   }
 };
 
 export function getAvatarEntries() {
-  return Object.values(AVATARS).sort((a, b) => a.sortOrder - b.sortOrder);
+  return Object.values(AVATARS).sort((a, b) => {
+    const aAnimated = a.isAnimated ? 1 : 0;
+    const bAnimated = b.isAnimated ? 1 : 0;
+    if (aAnimated !== bAnimated) {
+      return bAnimated - aAnimated;
+    }
+    return a.sortOrder - b.sortOrder;
+  });
 }
 
 export function getAvatarByKey(key) {
