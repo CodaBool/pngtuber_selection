@@ -47,9 +47,9 @@ export const AVATARS = {
   hmm: {
     key: "hmm",
     name: "Hmm",
-    idleUrl: "https://gist.github.com/user-attachments/assets/2aa8a87d-2cb1-4b7e-bbe8-4360e4b4524b",
-    speakingUrl: "https://gist.github.com/user-attachments/assets/9cde84b3-877d-41b0-992e-b2d24d7559ce",
-    previewUrl: "https://gist.github.com/user-attachments/assets/9cde84b3-877d-41b0-992e-b2d24d7559ce",
+    idleUrl: "https://gist.github.com/user-attachments/assets/6903272f-d7c5-4b05-afeb-039daf909bec",
+    speakingUrl: "https://gist.github.com/user-attachments/assets/397e38b8-e408-4201-978a-c6886e3810cf",
+    previewUrl: "https://gist.github.com/user-attachments/assets/397e38b8-e408-4201-978a-c6886e3810cf",
     isAnimated: false,
     sortOrder: 6
   },
